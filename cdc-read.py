@@ -4,6 +4,7 @@ import re
 import os
 import csv
 import json
+import sqlite3
 
 # create BeautifulSoup object
 url = "https://www.cdc.gov/coronavirus/2019-ncov/cases-updates/cases-in-us.html"
@@ -23,6 +24,13 @@ for state in info_dict["data"]:
     state_dict["Cases"] = state.get("Cases Reported", None)
     state_dict["Transmission"] = state.get("Community Transmission�", None)
     state_list.append(state_dict)
-print(state_list)
 
-#print(len(states))
+# set up connection to the database
+path = os.path.dirname(os.path.abspath(__file__))
+conn = sqlite3.connect(path+'/SI206_final_db.db')
+cur = conn.cursor()
+cur.execute("DROP TABLE IF EXISTS US_Covid_19_Cases")
+cur.execute("CREATE TABLE US_Covid_19_Cases (id INTEGER PRIMARY KEY, jurisdiction TEXT, cases TEXT, transmission TEXT)")
+for i in (range(len(state_list) - 1)):
+    cur.execute("INSERT INTO US_Covid_19_Cases (id, jurisdiction, cases, transmission) VALUES (?,?,?,?)",(i,state_list[i]["Jurisdiction"],state_list[i]["Cases"],state_list[i]["Transmission"]))
+conn.commit()

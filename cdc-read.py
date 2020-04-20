@@ -34,11 +34,11 @@ for state in info_dict:
     state_list.append(state_dict)
 
 
+#Records all jurisdictions into text file
 file = open('state_list.txt', 'w') 
 for state in state_list:
     file.write(state['Jurisdiction']+'\n')
 file.close() 
-
 
 
 

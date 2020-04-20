@@ -18,17 +18,7 @@ for loc in locations:
         location_ids[loc['name']] = loc['id']
 
 
-'''request_url = "http://api.openweathermap.org/data/2.5/forecast?id=" + str(location_ids['New Jersey']) + "&APPID=3c9071d80e11b58d16bd45c0ab95c7ad&units=imperial"
-r = requests.get(request_url)
-j=r.json()
-
-print("Jersey Weather Data:")
-print("Temp:", j['list'][0]['main']['temp'])
-print("Min:", j['list'][0]['main']['temp_min'])
-print("Max", j['list'][0]['main']['temp_max'])
-print("Weather:", j['list'][0]['weather'][0]['main']) '''
-
-
+#Test function to get weather data for a state
 def get_weather_data(state):
     request_url = "http://api.openweathermap.org/data/2.5/forecast?id=" + str(location_ids[state]) + "&APPID=3c9071d80e11b58d16bd45c0ab95c7ad&units=imperial"
     r = requests.get(request_url)
@@ -36,12 +26,12 @@ def get_weather_data(state):
     print(state, "Data")
     print("Temp:", j['list'][0]['main']['temp'])
     print("Min:", j['list'][0]['main']['temp_min'])
-    print("Max", j['list'][0]['main']['temp_max'])
+    print("Max:", j['list'][0]['main']['temp_max'])
     print("Weather:", j['list'][0]['weather'][0]['main'])
 
 
+#Prints out all states weather information from state_list 
 for location in location_ids:
     get_weather_data(location)
     print()
-
 

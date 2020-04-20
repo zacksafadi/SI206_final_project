@@ -33,6 +33,16 @@ for state in info_dict:
         state_dict["Transmission"] = trans[1]
     state_list.append(state_dict)
 
+
+file = open('state_list.txt', 'w') 
+for state in state_list:
+    file.write(state['Jurisdiction']+'\n')
+file.close() 
+
+
+
+
+
 # set up connection to the database
 path = os.path.dirname(os.path.abspath(__file__))
 conn = sqlite3.connect(path+'/SI206_final_db.db')
@@ -45,3 +55,4 @@ for i in (range(len(state_list) - 1)):
     cur.execute("INSERT INTO US_Covid_19_Cases (id, jurisdiction, cases, timestamp) VALUES (?,?,?,?)",(i,state_list[i]["Jurisdiction"],state_list[i]["Cases"],datetime.now()))
     cur.execute("INSERT INTO US_Covid_19_Transmission (id, jurisdiction, transmission, timestamp) VALUES (?,?,?,?)",(i,state_list[i]["Jurisdiction"],state_list[i]["Transmission"],datetime.now()))
 conn.commit()
+

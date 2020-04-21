@@ -55,9 +55,6 @@ for state in state_list:
     file.write(state['Jurisdiction']+'\n')
 file.close() 
 
-
-
-
 # set up connection to the database
 path = os.path.dirname(os.path.abspath(__file__))
 conn = sqlite3.connect(path+'/SI206_final_db.db')
@@ -69,22 +66,12 @@ for i in (range(len(state_list) - 1)):
     if cur.fetchone() == None:
         for j in range(4):
             cur.execute("INSERT INTO US_Covid_19_Transmission (id, transmission) VALUES (?,?)",(j, trans_list[j]))
-    '''try:
-        # check if table is already filled
-        cur.execute("UPDATE US_Covid_19_Transmission SET transmission = ? WHERE id = ?",(trans_list[0], 0))
-    except:
-        for j in range(4):
-            cur.execute("INSERT INTO US_Covid_19_Transmission (id, transmission) VALUES (?,?)",(j, trans_list[j]))
-            conn.commit()'''
 
     cur.execute("SELECT cases FROM US_Covid_19_Cases WHERE jurisdiction = ? LIMIT 1",(state_list[i]["Jurisdiction"], ))
     try:
         # if already there, update the number of cases
         cur.execute("UPDATE US_Covid_19_Cases SET cases = ?, transmission_id = ? WHERE jurisdiction = ?",(state_list[i]["Cases"], state_list[i]["trans_id"], state_list[i]["Jurisdiction"]))
-        #cur.execute("UPDATE US_Covid_19_Cases SET transmission_id = ? WHERE name = ?"(state_list[i]["trans_id"], state_list[i]["Jurisdiction"]))
     except:
         # not there, so insert it
         cur.execute("INSERT INTO US_Covid_19_Cases (id, jurisdiction, cases, transmission_id) VALUES (?,?,?,?)",(i,state_list[i]["Jurisdiction"],state_list[i]["Cases"],state_list[i]["trans_id"]))
-    #cur.execute("INSERT INTO US_Covid_19_Cases (id, jurisdiction, cases, timestamp) VALUES (?,?,?,?)",(i,state_list[i]["Jurisdiction"],state_list[i]["Cases"],datetime.now()))
-    #cur.execute("INSERT INTO US_Covid_19_Transmission (id, jurisdiction, transmission, timestamp) VALUES (?,?,?,?)",(i,state_list[i]["Jurisdiction"],state_list[i]["Transmission"],datetime.now()))
 conn.commit()

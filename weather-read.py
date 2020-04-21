@@ -48,12 +48,15 @@ conn = sqlite3.connect(path+'/SI206_final_db.db')
 
 cur = conn.cursor()
 
-cur.execute("DROP TABLE IF EXISTS US_Jurisdiction_Weather")
-
-cur.execute("CREATE TABLE US_Jurisdiction_Weather (id INTEGER PRIMARY KEY, jurisdiction TEXT, temp INTEGER, min INTEGER, max INTEGER, weather TEXT)")
+cur.execute("CREATE TABLE IF NOT EXISTS US_Jurisdiction_Weather (id INTEGER PRIMARY KEY, jurisdiction TEXT, temp INTEGER, min INTEGER, max INTEGER, weather TEXT)")
 
 for location in location_ids:
-    cur.execute("INSERT INTO US_Jurisdiction_Weather (id, jurisdiction, temp, min, max, weather) VALUES (?,?,?,?,?, ?)",
-    get_weather_data(location))
+    try:
+        id, state, temp, min, max, weather = get_weather_data(location)
+        mysql = "UPDATE US_Jurisdiction_Weather SET temp="+str(temp)+", min="+str(min)+", max="+str(max)+", weather="+weather+" WHERE id="+str(location_ids[location])
+        cur.execute(mysql)
+    except:
+        cur.execute("INSERT INTO US_Jurisdiction_Weather (id, jurisdiction, temp, min, max, weather) VALUES (?,?,?,?,?, ?)",
+        get_weather_data(location))
 
 conn.commit()

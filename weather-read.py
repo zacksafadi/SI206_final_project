@@ -1,6 +1,10 @@
 # starter for rahul to pull from weather API (had to add something to file so I could upload it to GitHub)
 import requests
+import re
+import os
+import csv
 import json
+import sqlite3
 
 #Gets list of states to pull weather data for
 with open("state_list.txt") as f:
@@ -23,15 +27,33 @@ def get_weather_data(state):
     request_url = "http://api.openweathermap.org/data/2.5/forecast?id=" + str(location_ids[state]) + "&APPID=3c9071d80e11b58d16bd45c0ab95c7ad&units=imperial"
     r = requests.get(request_url)
     j=r.json()
-    print(state, "Data")
-    print("Temp:", j['list'][0]['main']['temp'])
-    print("Min:", j['list'][0]['main']['temp_min'])
-    print("Max:", j['list'][0]['main']['temp_max'])
-    print("Weather:", j['list'][0]['weather'][0]['main'])
+    id = location_ids[state]
+    temp = j['list'][0]['main']['temp']
+    min = j['list'][0]['main']['temp_min']
+    max = j['list'][0]['main']['temp_max']
+    weather = j['list'][0]['weather'][0]['main']
+    return (id, state, temp, min, max, weather)
+
 
 
 #Prints out all states weather information from state_list 
-for location in location_ids:
+'''for location in location_ids:
     get_weather_data(location)
-    print()
+    print()'''
 
+# set up connection to the database
+path = os.path.dirname(os.path.abspath(__file__))
+
+conn = sqlite3.connect(path+'/SI206_final_db.db')
+
+cur = conn.cursor()
+
+cur.execute("DROP TABLE IF EXISTS US_Jurisdiction_Weather")
+
+cur.execute("CREATE TABLE US_Jurisdiction_Weather (id INTEGER PRIMARY KEY, jurisdiction TEXT, temp INTEGER, min INTEGER, max INTEGER, weather TEXT)")
+
+for location in location_ids:
+    cur.execute("INSERT INTO US_Jurisdiction_Weather (id, jurisdiction, temp, min, max, weather) VALUES (?,?,?,?,?, ?)",
+    get_weather_data(location))
+
+conn.commit()

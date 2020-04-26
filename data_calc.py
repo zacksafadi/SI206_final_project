@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # data calculation and database joins
 import os
 import sqlite3
@@ -19,6 +18,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-=======
-# data calculation and database joins
->>>>>>> 19d030871a66722313a1e4745d50e39970e13a6a

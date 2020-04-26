@@ -6,20 +6,19 @@ import csv
 import json
 import sqlite3
 
-#Gets list of states to pull weather data for
-with open("state_list.txt") as f:
-    state_list = f.readlines()
-state_list = [state.strip() for state in state_list] 
+def get_jurisdiction_list(filename) :
+    #Gets list of states to pull weather data for
+    with open(filename) as f:
+        jurisdiction_list = f.readlines()
+    jurisdiction_list = [jurisdiction.strip() for jurisdiction in jurisdiction_list] 
+    return jurisdiction_list
 
-#loads in ID list for OpenWeatheMap API
-with open('city.list.json') as f:
-  locations = json.load(f)
 
-#creates dict for ids for states in state_list
-location_ids = {}
-for loc in locations:
-    if loc['name'] in state_list:
-        location_ids[loc['name']] = loc['id']
+def get_jurisdictions():
+    #loads in ID list for OpenWeatheMap API
+    with open('city.list.json') as f:
+        locations = json.load(f)
+    return locations
 
 
 #Test function to get weather data for a state
@@ -35,30 +34,45 @@ def get_weather_data(state):
     return (id, state, temp, min, max, weather)
 
 
-
-#Prints out all states weather information from state_list 
-'''for location in location_ids:
-    get_weather_data(location)
-    print()'''
-
-# set up connection to the database
-path = os.path.dirname(os.path.abspath(__file__))
-
-conn = sqlite3.connect(path+'/SI206_final_db.db')
-
-cur = conn.cursor()
-
-cur.execute("CREATE TABLE IF NOT EXISTS US_Jurisdiction_Weather (id INTEGER PRIMARY KEY, jurisdiction TEXT, temp INTEGER, min INTEGER, max INTEGER, weather TEXT)")
+def print_weather_data(ids):
+    #Prints out all states weather information from state_list 
+    for location in ids:
+        print(get_weather_data(location))
+        print()
 
 
-for location in location_ids:
-    cur.execute("SELECT temp FROM US_Jurisdiction_Weather WHERE id = ? LIMIT 1", (location_ids[location], ))
-    try:
-        id, state, temp, min, max, weather = get_weather_data(location)
-        mysql = "UPDATE US_Jurisdiction_Weather SET temp=?, min=?, max=?, weather=? WHERE id==?"
-        cur.execute(mysql, (temp, min, max, weather, id))
-    except:
-        cur.execute("INSERT INTO US_Jurisdiction_Weather (id, jurisdiction, temp, min, max, weather) VALUES (?,?,?,?,?, ?)",
-        get_weather_data(location))
+def write_to_db(ids):
+    # set up connection to the database
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path+'/SI206_final_db.db')
+    cur = conn.cursor()
+    cur.execute("CREATE TABLE IF NOT EXISTS US_Jurisdiction_Weather (id INTEGER PRIMARY KEY, jurisdiction TEXT, temp INTEGER, min INTEGER, max INTEGER, weather TEXT)")
 
-conn.commit()
+    for loc in ids:
+        cur.execute("SELECT temp FROM US_Jurisdiction_Weather WHERE id = ? LIMIT 1", (ids[loc], ))
+        try:
+            id, state, temp, min, max, weather = get_weather_data(loc)
+            mysql = "UPDATE US_Jurisdiction_Weather SET temp=?, min=?, max=?, weather=? WHERE id==?"
+            cur.execute(mysql, (temp, min, max, weather, id))
+        except:
+            cur.execute("INSERT INTO US_Jurisdiction_Weather (id, jurisdiction, temp, min, max, weather) VALUES (?,?,?,?,?, ?)",
+            get_weather_data(loc))
+
+    conn.commit()
+
+
+def main():
+    jurisdictions = get_jurisdictions()
+    jurisdiction_list = get_jurisdiction_list("state_list.txt")
+
+    #creates dict for ids for locs in jurisdictions
+    ids = {}
+    for loc in jurisdictions:
+        if loc['name'] in jurisdiction_list:
+            ids[loc['name']] = loc['id']
+
+    #print_weather_data(ids)
+    write_to_db(ids)
+
+if __name__ == "__main__":
+    main()

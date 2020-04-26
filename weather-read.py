@@ -71,8 +71,8 @@ def main():
         if loc['name'] in jurisdiction_list:
             ids[loc['name']] = loc['id']
 
-    print_weather_data(ids)
-    #write_to_db(ids)
+    #print_weather_data(ids)
+    write_to_db(ids)
 
 if __name__ == "__main__":
     main()

@@ -15,6 +15,7 @@ for line in data:
     temps.append(stats[0][1:])
     cases.append(float(stats[1][:-2]))
 
-
-
-fig = plt.figure(figsize=(10,5))
+plt.figure(figsize=(10,5))
+plt.bar(temps, cases)
+plt.title('Average Number of Covid-19 Cases by Temperature Range')
+plt.show()

@@ -44,11 +44,11 @@ def main():
 
     f = open("cases_data.txt", "w")
     f.write("(Average Cloud Cases," + str(avg_cloud_cases) + ")\n")
-    f.write("Average Rain Cases," + str(avg_rain_cases) + ")\n")
-    f.write("Average Clear Cases," + str(avg_clear_cases) + ")\n")
-    f.write("Average Cold Cases (30-50)," + str(avg_cold_cases) + ")\n")
-    f.write("Average Warm Cases (50-70)," + str(avg_warm_cases) + ")\n")
-    f.write("Average Hot Cases (70-90)," + str(avg_hot_cases) + ")\n")
+    f.write("(Average Rain Cases," + str(avg_rain_cases) + ")\n")
+    f.write("(Average Clear Cases," + str(avg_clear_cases) + ")\n")
+    f.write("(Average Cold Cases (30-50)," + str(avg_cold_cases) + ")\n")
+    f.write("(Average Warm Cases (50-70)," + str(avg_warm_cases) + ")\n")
+    f.write("(Average Hot Cases (70-90)," + str(avg_hot_cases) + ")\n")
     f.close()
 
 

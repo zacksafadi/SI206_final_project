@@ -45,13 +45,20 @@ def setUpDatabase(db_name):
 
 def updateCasesTable(data, cur, conn):
     cur.execute("CREATE TABLE IF NOT EXISTS US_Covid_19_Cases (id INTEGER PRIMARY KEY, jurisdiction TEXT, cases TEXT, transmission_id INTEGER)")
-    for i in (range(len(data) - 1)):
+    cur.execute("SELECT cases FROM US_Covid_19_Cases WHERE id = 1 LIMIT 1")
+    if cur.fetchone() == None:
+        for i in (range(len(data) - 1)):
+            cur.execute("INSERT INTO US_Covid_19_Cases (id, jurisdiction, cases, transmission_id) VALUES (?,?,?,?)",(i,data[i]["Jurisdiction"],data[i]["Cases"],data[i]["trans_id"]))
+    else:
+        for i in (range(len(data) - 1)):
+            cur.execute("UPDATE US_Covid_19_Cases SET cases = ?, transmission_id = ? WHERE jurisdiction = ?",(data[i]["Cases"], data[i]["trans_id"], data[i]["Jurisdiction"]))
+    '''for i in (range(len(data) - 1)):
         try:
             # if already there, update the number of cases
             cur.execute("UPDATE US_Covid_19_Cases SET cases = ?, transmission_id = ? WHERE jurisdiction = ?",(data[i]["Cases"], data[i]["trans_id"], data[i]["Jurisdiction"]))
         except:
             # not there, so insert it
-            cur.execute("INSERT INTO US_Covid_19_Cases (id, jurisdiction, cases, transmission_id) VALUES (?,?,?,?)",(i,data[i]["Jurisdiction"],data[i]["Cases"],data[i]["trans_id"]))
+            cur.execute("INSERT INTO US_Covid_19_Cases (id, jurisdiction, cases, transmission_id) VALUES (?,?,?,?)",(i,data[i]["Jurisdiction"],data[i]["Cases"],data[i]["trans_id"]))'''
     conn.commit()
 
 def updateTransmissionTable(data, cur, conn):

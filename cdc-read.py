@@ -16,7 +16,7 @@ def readFromUrl(url):
         trans_list.append("Undetermined")
         trans_list.append("defined area(s)")
         trans_list.append("widepsread")
-    for state in info_dict:
+    for state in info_list:
         state_dict = {}
         state_dict["Jurisdiction"] = state.get("Jurisdiction", None)
         state_dict["Cases"] = state.get("Cases Reported", None)

@@ -1,5 +1,6 @@
 # data calculation and database joins
 import os
+import csv
 import sqlite3
 
 def setUpDatabase(db_name):
@@ -19,12 +20,9 @@ def getCasesbyTemp(cur, conn, temp_lower, temp_upper):
 def getAvgCasesByWeather(weather_list):
     total = 0
     for region in weather_list:
-        try:
-            total += int(region[1])
-            print(region[1])
-        except ValueError as identifier:
-            pass
-        
+        if region[1] == "None":
+            continue
+        total += int(region[1])
     return total / len(weather_list)
 
 def main():
@@ -43,6 +41,15 @@ def main():
     avg_cold_cases = getAvgCasesByWeather(cold_list)
     avg_warm_cases = getAvgCasesByWeather(warm_list)
     avg_hot_cases = getAvgCasesByWeather(hot_list)
+
+    f = open("cases_data.txt", "w")
+    f.write("(Average Cloud Cases," + str(avg_cloud_cases) + ")\n")
+    f.write("Average Rain Cases," + str(avg_rain_cases) + ")\n")
+    f.write("Average Clear Cases," + str(avg_clear_cases) + ")\n")
+    f.write("Average Cold Cases (30-50)," + str(avg_cold_cases) + ")\n")
+    f.write("Average Warm Cases (50-70)," + str(avg_warm_cases) + ")\n")
+    f.write("Average Hot Cases (70-90)," + str(avg_hot_cases) + ")\n")
+    f.close()
 
 
 if __name__ == "__main__":

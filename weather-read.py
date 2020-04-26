@@ -22,11 +22,11 @@ def get_jurisdictions():
 
 
 #Test function to get weather data for a state
-def get_weather_data(state):
-    request_url = "http://api.openweathermap.org/data/2.5/forecast?id=" + str(location_ids[state]) + "&APPID=3c9071d80e11b58d16bd45c0ab95c7ad&units=imperial"
+def get_weather_data(ids, state):
+    request_url = "http://api.openweathermap.org/data/2.5/forecast?id=" + str(ids[state]) + "&APPID=3c9071d80e11b58d16bd45c0ab95c7ad&units=imperial"
     r = requests.get(request_url)
     j=r.json()
-    id = location_ids[state]
+    id = ids[state]
     temp = j['list'][0]['main']['temp']
     min = j['list'][0]['main']['temp_min']
     max = j['list'][0]['main']['temp_max']
@@ -37,7 +37,7 @@ def get_weather_data(state):
 def print_weather_data(ids):
     #Prints out all states weather information from state_list 
     for location in ids:
-        print(get_weather_data(location))
+        print(get_weather_data(ids, location))
         print()
 
 
@@ -51,12 +51,12 @@ def write_to_db(ids):
     for loc in ids:
         cur.execute("SELECT temp FROM US_Jurisdiction_Weather WHERE id = ? LIMIT 1", (ids[loc], ))
         try:
-            id, state, temp, min, max, weather = get_weather_data(loc)
+            id, state, temp, min, max, weather = get_weather_data(ids, loc)
             mysql = "UPDATE US_Jurisdiction_Weather SET temp=?, min=?, max=?, weather=? WHERE id==?"
             cur.execute(mysql, (temp, min, max, weather, id))
         except:
             cur.execute("INSERT INTO US_Jurisdiction_Weather (id, jurisdiction, temp, min, max, weather) VALUES (?,?,?,?,?, ?)",
-            get_weather_data(loc))
+            get_weather_data(ids, loc))
 
     conn.commit()
 
@@ -71,8 +71,8 @@ def main():
         if loc['name'] in jurisdiction_list:
             ids[loc['name']] = loc['id']
 
-    #print_weather_data(ids)
-    write_to_db(ids)
+    print_weather_data(ids)
+    #write_to_db(ids)
 
 if __name__ == "__main__":
     main()

@@ -52,13 +52,6 @@ def updateCasesTable(data, cur, conn):
     else:
         for i in (range(len(data) - 1)):
             cur.execute("UPDATE US_Covid_19_Cases SET cases = ?, transmission_id = ? WHERE jurisdiction = ?",(data[i]["Cases"], data[i]["trans_id"], data[i]["Jurisdiction"]))
-    '''for i in (range(len(data) - 1)):
-        try:
-            # if already there, update the number of cases
-            cur.execute("UPDATE US_Covid_19_Cases SET cases = ?, transmission_id = ? WHERE jurisdiction = ?",(data[i]["Cases"], data[i]["trans_id"], data[i]["Jurisdiction"]))
-        except:
-            # not there, so insert it
-            cur.execute("INSERT INTO US_Covid_19_Cases (id, jurisdiction, cases, transmission_id) VALUES (?,?,?,?)",(i,data[i]["Jurisdiction"],data[i]["Cases"],data[i]["trans_id"]))'''
     conn.commit()
 
 def updateTransmissionTable(data, cur, conn):

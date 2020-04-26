@@ -14,7 +14,10 @@ def getCasesByWeather(cur, conn, weather):
 
 def main():
     cur, conn = setUpDatabase('SI206_final_db.db')
-    print(getCasesByWeather(cur, conn, "Clouds"))
+    cloud_list = getCasesByWeather(cur, conn, "Clouds")
+    rain_list = getCasesByWeather(cur, conn, "Rain")
+    clear_list = getCasesByWeather(cur, conn, "Clear")
+
 
 if __name__ == "__main__":
     main()

@@ -35,6 +35,9 @@ def main():
     cold_list = getCasesbyTemp(cur, conn, 30, 50)
     warm_list = getCasesbyTemp(cur, conn, 50, 70)
     hot_list = getCasesbyTemp(cur, conn, 70, 90)
+    avg_cold_cases = getAvgCasesByWeather(cold_list)
+    avg_warm_cases = getAvgCasesByWeather(warm_list)
+    avg_hot_cases = getAvgCasesByWeather(hot_list)
 
 
 if __name__ == "__main__":

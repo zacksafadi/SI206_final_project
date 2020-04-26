@@ -19,7 +19,12 @@ def getCasesbyTemp(cur, conn, temp_lower, temp_upper):
 def getAvgCasesByWeather(weather_list):
     total = 0
     for region in weather_list:
-        total += region[1]
+        try:
+            total += int(region[1])
+            print(region[1])
+        except ValueError as identifier:
+            pass
+        
     return total / len(weather_list)
 
 def main():

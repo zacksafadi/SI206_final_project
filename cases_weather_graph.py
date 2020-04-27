@@ -23,7 +23,7 @@ def create_graph(weather, cases):
 def main():
     data = get_data("cases_data.txt")
 
-    weather = ['Clouds', 'Clear', 'Rain']
+    weather = ['Clouds', 'Rain', 'Clear']
     cases = []
     for line in data:
         if line.find("Cold") != -1 or line.find("Warm") != -1 or line.find("Hot") != -1:
@@ -32,6 +32,8 @@ def main():
         cases.append(float(stats[1][:-2]))
 
     create_graph(weather, cases)
+
+    print(cases)
 
 if __name__ == "__main__":
     main()

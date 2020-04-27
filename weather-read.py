@@ -6,7 +6,7 @@ import csv
 import json
 import sqlite3
 
-def get_jurisdiction_list(filename) :
+def get_jurisdiction_list(filename):
     #Gets list of states to pull weather data for
     with open(filename) as f:
         jurisdiction_list = f.readlines()
@@ -22,16 +22,16 @@ def get_jurisdictions():
 
 
 #Test function to get weather data for a state
-def get_weather_data(ids, state):
-    request_url = "http://api.openweathermap.org/data/2.5/forecast?id=" + str(ids[state]) + "&APPID=3c9071d80e11b58d16bd45c0ab95c7ad&units=imperial"
+def get_weather_data(ids, jurisdiction):
+    request_url = "http://api.openweathermap.org/data/2.5/forecast?id=" + str(ids[jurisdiction]) + "&APPID=3c9071d80e11b58d16bd45c0ab95c7ad&units=imperial"
     r = requests.get(request_url)
     j=r.json()
-    id = ids[state]
+    id = ids[jurisdiction]
     temp = j['list'][0]['main']['temp']
     min = j['list'][0]['main']['temp_min']
     max = j['list'][0]['main']['temp_max']
     weather = j['list'][0]['weather'][0]['main']
-    return (id, state, temp, min, max, weather)
+    return (id, jurisdiction, temp, min, max, weather)
 
 
 def print_weather_data(ids):
